@@ -90,6 +90,56 @@
 
 <body class="bg-surface-950 text-white">
 
+  <!-- ==========================================================
+       PASSWORD GATE — protezione leggera, non sicurezza vera.
+       Password attuale: "hotely-fff-2026"
+       Per cambiarla: sostituisci la stringa base64 dentro atob('...')
+       con il risultato di btoa('nuova-password') in browser console.
+       ========================================================== -->
+  <div id="auth-gate" style="position:fixed;inset:0;z-index:9999;background:#05050b;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div style="max-width:380px;width:100%;text-align:center;">
+      <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:32px;">
+        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#6C3AED,#06B6D4);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">H</div>
+        <span style="font-size:16px;font-weight:600;color:white;">Hotely.ai</span>
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:12px;letter-spacing:0.1em;text-transform:uppercase;">Materiale riservato</div>
+      <h1 style="font-size:24px;font-weight:700;color:white;margin:0 0 8px 0;">Pagina protetta</h1>
+      <p style="font-size:14px;color:rgba(255,255,255,0.5);margin:0 0 24px 0;">Inserisci la password ricevuta da Mirco.</p>
+      <input id="auth-input" type="password" autofocus placeholder="Password"
+        style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:white;font-size:14px;outline:none;text-align:center;font-family:inherit;box-sizing:border-box;" />
+      <button id="auth-btn"
+        style="width:100%;margin-top:10px;padding:12px;background:white;color:#05050b;border:none;border-radius:12px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;">
+        Entra
+      </button>
+      <div id="auth-error" style="margin-top:12px;font-size:12px;color:#f87171;min-height:16px;"></div>
+      <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:40px;line-height:1.5;">Se non hai ricevuto la password, scrivi direttamente a Mirco.<br/>Non condividere il link senza il suo consenso.</p>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var EXPECTED = atob('aG90ZWx5LWZmZi0yMDI2'); // hotely-fff-2026
+    var KEY = 'hotely_fff_auth_v1';
+    var gate = document.getElementById('auth-gate');
+    document.body.style.overflow = 'hidden';
+    function unlock() {
+      sessionStorage.setItem(KEY, '1');
+      gate.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    if (sessionStorage.getItem(KEY) === '1') { unlock(); return; }
+    var input = document.getElementById('auth-input');
+    var btn = document.getElementById('auth-btn');
+    var err = document.getElementById('auth-error');
+    function check() {
+      if (input.value.trim() === EXPECTED) { unlock(); }
+      else { err.textContent = 'Password errata'; input.value = ''; input.focus(); }
+    }
+    btn.addEventListener('click', check);
+    input.addEventListener('keypress', function(e) { if (e.key === 'Enter') check(); });
+  })();
+  </script>
+
   <!-- NAV -->
   <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-surface-950/80 border-b border-white/[0.04]">
     <div class="container-narrow flex items-center justify-between py-3.5">
